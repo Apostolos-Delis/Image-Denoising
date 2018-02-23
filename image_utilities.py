@@ -93,13 +93,6 @@ class ImageUtilities:
         """
         test the various functions that are used in ImageUtilities
         """
-        # ImageUtilities.add_gaussian_white_noise(
-        #     "/Users/apostolos/Documents/UCLA/Year 1 Q2/EE 194/Image DeNoising/grey_images",
-        #     variance=10, delete_previous=True)
-        #
-        # image_array = ImageUtilities.image_to_nparray(
-        #     "/Users/apostolos/Documents/UCLA/Year 1 Q2/EE 194/Image DeNoising/grey_images/grey_image_0010.jpg")
-        # image_array = ImageUtilities.__add_gaussian_noise(image_array, noise_sigma=100, display_noise=True)
         ImageUtilities.make_training_data()
 
     @staticmethod
