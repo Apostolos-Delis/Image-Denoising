@@ -9,7 +9,7 @@ from PIL import Image
 class ImageUtilities:
 
     @staticmethod
-    def make_training_data():
+    def make_training_data(image_directory="101_ObjectCategories"):
         """
         Creates two folders, inputs and outputs, that hold grey images (300x300)
         output images also contain white noise
@@ -22,7 +22,7 @@ class ImageUtilities:
         # Make a new Temp directory named grays and store the temporary gray images
         shutil.rmtree("inputs", ignore_errors=True)
         shutil.rmtree("outputs", ignore_errors=True)
-        ImageUtilities.convert_image_directory_to_greyscale(os.path.join(BASE_DIRECTORY, "101_ObjectCategories"),
+        ImageUtilities.convert_image_directory_to_greyscale(os.path.join(BASE_DIRECTORY, image_directory),
                                                             new_directory="grays")
 
         # add noise to the "grays"
@@ -46,7 +46,7 @@ class ImageUtilities:
         for filename in os.listdir(grays_dir):
             if filename.endswith(".png") or filename.endswith(".jpg"):
                 filename = os.path.join(grays_dir, filename)
-                ImageUtilities.resize_image(image_file=filename, directory=input_directory)
+                ImageUtilities.resize_image(image_file=filename, directory=output_directory)
 
         shutil.rmtree(grays_dir, ignore_errors=True)
 
@@ -54,7 +54,7 @@ class ImageUtilities:
         for filename in os.listdir(noise_dir):
             if filename.endswith(".png") or filename.endswith(".jpg"):
                 filename = os.path.join(noise_dir, filename)
-                ImageUtilities.resize_image(image_file=filename, directory=output_directory)
+                ImageUtilities.resize_image(image_file=filename, directory=input_directory)
 
         shutil.rmtree(noise_dir, ignore_errors=True)
 
@@ -93,6 +93,13 @@ class ImageUtilities:
         """
         test the various functions that are used in ImageUtilities
         """
+        # ImageUtilities.add_gaussian_white_noise(
+        #     "/Users/apostolos/Documents/UCLA/Year 1 Q2/EE 194/Image DeNoising/grey_images",
+        #     variance=10, delete_previous=True)
+        #
+        # image_array = ImageUtilities.image_to_nparray(
+        #     "/Users/apostolos/Documents/UCLA/Year 1 Q2/EE 194/Image DeNoising/grey_images/grey_image_0010.jpg")
+        # image_array = ImageUtilities.__add_gaussian_noise(image_array, noise_sigma=100, display_noise=True)
         ImageUtilities.make_training_data()
 
     @staticmethod
@@ -182,7 +189,7 @@ class ImageUtilities:
     def convert_image_directory_to_greyscale(directory: str, new_directory: str):
         """
         :param new_directory: where to store the new images
-        :param directory: directory of images
+        :param directory: directory of directories 
         """
 
         DIRECTORY_PATH = "/Users/apostolos/Documents/UCLA/Year 1 Q2/EE 194/Image DeNoising"
@@ -191,17 +198,43 @@ class ImageUtilities:
         ImageUtilities.make_directory(os.path.join(DIRECTORY_PATH, new_directory))
 
         for dir in os.listdir(directory):
-            print(os.path.join(directory, dir))
-            if dir not in bad_files:
-                temp_directory = os.path.join(directory, dir)
-                for filename in os.listdir(temp_directory):
-                    if (filename.endswith(".png") or filename.endswith(".jpg")) and filename not in bad_files:
-                        image_array = ImageUtilities.image_to_nparray(os.path.join(temp_directory, filename))
-                        image_array = ImageUtilities.__add_gaussian_noise(image_array, noise_sigma=0)
-                        image_array = ImageUtilities.convert_to_uint8(image_array)
-                        im = Image.fromarray(image_array)
-                        print("image", filename, "converted")
-                        im.save(os.path.join(os.path.join(DIRECTORY_PATH, new_directory), filename), "PNG")
+            if os.path.isdir(dir):
+                # print the current directory being processed
+                print(os.path.join(directory, dir))
+
+                # if it is an image directory
+                if dir not in bad_files:
+                    temp_directory = os.path.join(directory, dir)
+                    for filename in os.listdir(temp_directory):
+                        if (filename.endswith(".png") or filename.endswith(".jpg")) and filename not in bad_files:
+                            image_array = ImageUtilities.image_to_nparray(os.path.join(temp_directory, filename))
+                            image_array = ImageUtilities.__add_gaussian_noise(image_array, noise_sigma=0)
+                            image_array = ImageUtilities.convert_to_uint8(image_array)
+                            im = Image.fromarray(image_array)
+
+                            # if decided to use a different method of greyscale
+                            # color_image_path = os.path.join(temp_directory, filename)
+                            # img = Image.open(color_image_path).convert('L')
+                            # img.save(os.path.join(os.path.join(DIRECTORY_PATH, new_directory), filename))
+
+                            print("image", filename, "converted")
+                            im.save(os.path.join(os.path.join(DIRECTORY_PATH, new_directory), filename), "PNG")
+
+            # if it is just an image
+            elif (dir.endswith(".png") or dir.endswith(".jpg")) and dir not in bad_files:
+                    filename = os.path.join(directory, dir)
+                    image_array = ImageUtilities.image_to_nparray(filename)
+                    image_array = ImageUtilities.__add_gaussian_noise(image_array, noise_sigma=0)
+                    image_array = ImageUtilities.convert_to_uint8(image_array)
+                    im = Image.fromarray(image_array)
+
+                    # if decided to use a different method of greyscale
+                    # color_image_path = os.path.join(temp_directory, filename)
+                    # img = Image.open(color_image_path).convert('L')
+                    # img.save(os.path.join(os.path.join(DIRECTORY_PATH, new_directory), filename))
+
+                    print("image", filename, "converted")
+                    im.save(os.path.join(os.path.join(DIRECTORY_PATH, new_directory), filename), "PNG")
 
         print("==== Images Converted to Greyscale ====")
 
