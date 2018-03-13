@@ -16,7 +16,7 @@ class ImageUtilities:
         function takes roughly ~5 min to run
         """
 
-        BASE_DIRECTORY = "/Users/apostolos/Documents/UCLA/Year 1 Q2/EE 194/Image DeNoising/"
+        BASE_DIRECTORY = "Image DeNoising/"
 
         # Get the Images out of the base directory 101_Object Categories and make it greyscale
         # Make a new Temp directory named grays and store the temporary gray images
