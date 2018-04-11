@@ -4,6 +4,6 @@ Using a directory of images, be able to add gaussian white noise to them and the
 
 Machine Learning Libraries used:
 
-Googles Tensorflow: https://www.tensorflow.org/
+Google's Tensorflow: https://www.tensorflow.org/
 
 Keras: https://keras.io/
