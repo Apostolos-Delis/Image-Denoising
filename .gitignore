@@ -2,8 +2,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-/C Extentions
+# C Extentions
 *.so
+
+# Images
+*.png
+*.jpg
 
 # Distribution / packaging
 .Python
